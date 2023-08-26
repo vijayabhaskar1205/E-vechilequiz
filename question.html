@@ -1,0 +1,164 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Quiz App</title>
+<style>
+    .h1{
+        align-items: center;
+    }
+  body {
+    background-image: url("https://t3.ftcdn.net/jpg/04/34/94/90/240_F_434949006_MtUycXdKs8P4Qg6ElGkuP9UdsEX012YE.jpg") ;
+    align-items: center;
+    margin-top: 10%;
+    font-family: Arial, sans-serif;
+  }
+  .quiz-container {
+    background-color: rgb(201, 208, 211);
+    max-width: 50%;
+    max-height: 70%;
+    margin: 0 auto;
+    padding: 60px;
+    border: 1px solid #82aaff;
+    border-radius: 10px;
+  }
+  .question {
+    font-size: 18px;
+    margin-bottom: 10px;
+  }
+  .options {
+    display: flex;
+    flex-direction: column;
+  }
+  .option {
+    margin-bottom: 5px;
+  }
+  .buttons {
+    padding: 30px 20px;
+    border-color: black;
+    display: flex;
+    justify-content: space-between;
+    margin-top: 50px;
+  }
+  .rest {
+    margin-bottom: 10px;
+  }
+</style>
+</head>
+<body>
+  
+    <center><h1>JavaScript Quiz</h1></center>
+<div class="quiz-container">
+  <div class="question"></div>
+  <div class="options"></div>
+  <div class="buttons">
+    <button id="prevBtn" disabled>Previous</button>
+    <button id="nextBtn">Next</button>
+  </div>
+  <div class="rest">Question: <span id="answeredCount">0</span></div>
+  <div>Score: <span id="score">0</span></div>
+</div>
+<script>
+  const questions = [
+    {
+      question: "The earliest EVs used lead-acid batteries. Modern electric cars use?",
+      options: ["a)Alkaline batteries ", "b)Bunsen cells ", "c)Lithium-ion batteries "],
+      correctAnswer: "c"
+    },
+    {
+      question: "Electric vehicles have?",
+      options: ["a)Fewer moving parts than internal combustion engine vehicles", "b)The same amount of moving parts as internal combustion engine vehicles ", "c)More moving parts than internal combustion engine vehicles "],
+      correctAnswer: "c"
+    },
+    {
+      question: "There are different types of EVs. Which of these is NOT a type of EV?",
+      options: ["a)Plug-in electric vehicle ", "b)Steam electric vehicle ", "c)Hybrid electric vehicle"],
+      correctAnswer: "b"
+    },
+    {
+      question: "EVs can be plugged directly into a standard wall socket to charge if an electrician verifies that the wiring is safe. A wall socket is limited to?",
+      options: ["a)1 kilowatt of charge per hour ", "b)2.4 kilowatts of charge per hour ", "c)5 kilowatts of charge per hour "],
+      correctAnswer: "b"
+    },
+    {
+      question: "The electric battery in hybrid electric vehicles (HEVs) can only be recharged through?",
+      options: ["a)Regenerative braking ", "b)Degenerative braking ", "c)Commemorative braking "],
+      correctAnswer: "a"
+    }
+    // Add more questions here
+  ];
+
+  const quizContainer = document.querySelector(".quiz-container");
+  const questionElement = quizContainer.querySelector(".question");
+  const optionsElement = quizContainer.querySelector(".options");
+  const prevButton = quizContainer.querySelector("#prevBtn");
+  const nextButton = quizContainer.querySelector("#nextBtn");
+  const answeredCountElement = quizContainer.querySelector("#answeredCount");
+  const scoreElement = quizContainer.querySelector("#score");
+
+  let currentQuestionIndex = 0;
+  let userScore = 0;
+
+  function updateQuestion() {
+    const currentQuestion = questions[currentQuestionIndex];
+    questionElement.textContent = `Question ${currentQuestionIndex + 1}: ${currentQuestion.question}`;
+    optionsElement.innerHTML = "";
+    currentQuestion.options.forEach((option, index) => {
+      const optionDiv = document.createElement("div");
+      optionDiv.className = "option";
+      optionDiv.innerHTML = `<input type="radio" name="q${currentQuestionIndex}" value="${index}"> ${option}`;
+      optionsElement.appendChild(optionDiv);
+    });
+  }
+
+  function updateButtons() {
+    prevButton.disabled = currentQuestionIndex === 0;
+    nextButton.disabled = currentQuestionIndex === questions.length - 1;
+  }
+
+  function updateScore() {
+    scoreElement.textContent = userScore;
+  }
+
+  function updateAnsweredCount() {
+    const answeredCount = document.querySelectorAll('input[name^="q"]:checked').length;
+    answeredCountElement.textContent = answeredCount;
+  }
+
+  function checkAnswer() {
+    const selectedOption = document.querySelector(`input[name="q${currentQuestionIndex}"]:checked`);
+    if (selectedOption) {
+      const selectedAnswerIndex = parseInt(selectedOption.value);
+      const correctAnswerIndex = questions[currentQuestionIndex].options.findIndex(option => option.startsWith("b)"));
+      if (selectedAnswerIndex === correctAnswerIndex) {
+        userScore++;
+      }
+    }
+  }
+
+  prevButton.addEventListener("click", () => {
+    checkAnswer();
+    currentQuestionIndex--;
+    updateQuestion();
+    updateButtons();
+    updateAnsweredCount();
+    updateScore();
+  });
+
+  nextButton.addEventListener("click", () => {
+    checkAnswer();
+    currentQuestionIndex++;
+    updateQuestion();
+    updateButtons();
+    updateAnsweredCount();
+    updateScore();
+  });
+
+  updateQuestion();
+  updateButtons();
+  updateScore();
+</script>
+</body>
+</html>
